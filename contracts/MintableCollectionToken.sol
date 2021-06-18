@@ -1,7 +1,3 @@
-/**
- *Submitted for verification at Etherscan.io on 2020-05-27
-*/
-
 pragma solidity ^0.5.0;
 pragma experimental ABIEncoderV2;
 
@@ -1017,7 +1013,7 @@ contract MintableCollectionToken is Ownable, SignerRole, ERC1155Base {
         return _hash;
     }
 
-    function validationHash(uint tokenId, Fee[] memory fees) public returns(bytes32) {
+    function validationHash(uint tokenId, Fee[] memory fees) public view returns(bytes32) {
         return keccak256(abi.encodePacked("\x19Ethereum Signed Message:\n32",calculateHash(tokenId,fees)));
     }
 
@@ -1029,10 +1025,9 @@ contract MintableCollectionToken is Ownable, SignerRole, ERC1155Base {
         _removeSigner(account);
     }
 
-    function mint(uint256 id, uint8 v, bytes32 r, bytes32 s, Fee[] memory fees, uint256 supply, string memory uri) public {
-        require(isSigner(ecrecover(validationHash(tokenId,_fees), v, r, s)), "owner should sign tokenId & fees");
-        fees[fees.length] = Fee(address(uint160(owner())),baseRoyaltyFee);
-        _mint(id, fees, supply, uri);
+    function mint(uint256 tokenId, uint8 v, bytes32 r, bytes32 s, Fee[] memory fees, uint256 supply, string memory uri) public {
+        require(isSigner(ecrecover(validationHash(tokenId,fees), v, r, s)), "owner should sign tokenId & fees");
+        _mint(tokenId, fees, supply, uri);
     }
 
     function setTokenURIPrefix(string memory tokenURIPrefix) public onlyOwner {
