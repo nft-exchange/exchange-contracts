@@ -1,7 +1,3 @@
-/**
- *Submitted for verification at Etherscan.io on 2020-05-27
-*/
-
 pragma solidity ^0.5.0;
 pragma experimental ABIEncoderV2;
 
@@ -1462,7 +1458,7 @@ contract MintableToken is Ownable, SignerRole, IERC721, IERC721Metadata, ERC721B
         return _hash;
     }
 
-    function validationHash(uint tokenId, Fee[] memory fees) public returns(bytes32) {
+    function validationHash(uint tokenId, Fee[] memory fees) public view returns(bytes32) {
         return keccak256(abi.encodePacked("\x19Ethereum Signed Message:\n32",calculateHash(tokenId,fees)));
     }
 
