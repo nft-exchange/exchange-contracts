@@ -1009,16 +1009,16 @@ contract MintableCollectionToken is Ownable, SignerRole, ERC1155Base {
         transferOwnership(newOwner);
     }
 
-    function calculateHash(uint tokenId, Fee[] memory fees) public view returns(bytes32) {
-        bytes32 _hash = keccak256(abi.encodePacked(address(this),tokenId));
+    function calculateHash(address minter, uint tokenId, Fee[] memory fees) public view returns(bytes32) {
+        bytes32 _hash = keccak256(abi.encodePacked(minter,address(this),tokenId));
         for (uint256 i = 0; i < fees.length; i++) {
             _hash = keccak256(abi.encodePacked(_hash, fees[i].recipient, fees[i].value));
         }
         return _hash;
     }
 
-    function validationHash(uint tokenId, Fee[] memory fees) public view returns(bytes32) {
-        return keccak256(abi.encodePacked("\x19Ethereum Signed Message:\n32",calculateHash(tokenId,fees)));
+    function validationHash(address minter, uint tokenId, Fee[] memory fees) public view returns(bytes32) {
+        return keccak256(abi.encodePacked("\x19Ethereum Signed Message:\n32",calculateHash(minter,tokenId,fees)));
     }
 
     function addSigner(address account) public onlyOwner {
@@ -1033,8 +1033,8 @@ contract MintableCollectionToken is Ownable, SignerRole, ERC1155Base {
         _mint(tokenId, fees, supply, uri);
     }
 
-    function mint(uint256 tokenId, uint8 v, bytes32 r, bytes32 s, Fee[] memory fees, uint256 supply, string memory uri) public {
-        require(isSigner(ecrecover(validationHash(tokenId,fees), v, r, s)), "owner should sign tokenId & fees");
+    function mint(address minter, uint256 tokenId, uint8 v, bytes32 r, bytes32 s, Fee[] memory fees, uint256 supply, string memory uri) public {
+        require(isSigner(ecrecover(validationHash(minter,tokenId,fees), v, r, s)), "owner should sign tokenId & fees");
         _mint(tokenId, fees, supply, uri);
     }
 

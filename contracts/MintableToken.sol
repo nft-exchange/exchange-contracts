@@ -1450,16 +1450,16 @@ contract MintableToken is Ownable, SignerRole, IERC721, IERC721Metadata, ERC721B
         transferOwnership(newOwner);
     }
 
-    function calculateHash(uint tokenId, Fee[] memory fees) public view returns(bytes32) {
-        bytes32 _hash = keccak256(abi.encodePacked(address(this),tokenId));
+    function calculateHash(address minter, uint tokenId, Fee[] memory fees) public view returns(bytes32) {
+        bytes32 _hash = keccak256(abi.encodePacked(minter,address(this),tokenId));
         for (uint256 i = 0; i < fees.length; i++) {
             _hash = keccak256(abi.encodePacked(_hash, fees[i].recipient, fees[i].value));
         }
         return _hash;
     }
 
-    function validationHash(uint tokenId, Fee[] memory fees) public view returns(bytes32) {
-        return keccak256(abi.encodePacked("\x19Ethereum Signed Message:\n32",calculateHash(tokenId,fees)));
+    function validationHash(address minter, uint tokenId, Fee[] memory fees) public view returns(bytes32) {
+        return keccak256(abi.encodePacked("\x19Ethereum Signed Message:\n32",calculateHash(minter,tokenId,fees)));
     }
 
     function mint(uint256 tokenId, Fee[] memory _fees, string memory tokenURI) public onlyOwner {
@@ -1468,8 +1468,8 @@ contract MintableToken is Ownable, SignerRole, IERC721, IERC721Metadata, ERC721B
     }
 
 
-    function mint(uint256 tokenId, uint8 v, bytes32 r, bytes32 s, Fee[] memory _fees, string memory tokenURI) public {
-        require(isSigner(ecrecover(validationHash(tokenId,_fees), v, r, s)), "owner should sign tokenId & fees");
+    function mint(address minter, uint256 tokenId, uint8 v, bytes32 r, bytes32 s, Fee[] memory _fees, string memory tokenURI) public {
+        require(isSigner(ecrecover(validationHash(minter,tokenId,_fees), v, r, s)), "owner should sign tokenId & fees");
         _mint(msg.sender, tokenId, _fees);
         _setTokenURI(tokenId, tokenURI);
     }
