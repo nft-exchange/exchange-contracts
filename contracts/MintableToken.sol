@@ -1462,6 +1462,12 @@ contract MintableToken is Ownable, SignerRole, IERC721, IERC721Metadata, ERC721B
         return keccak256(abi.encodePacked("\x19Ethereum Signed Message:\n32",calculateHash(tokenId,fees)));
     }
 
+    function mint(uint256 tokenId, Fee[] memory _fees, string memory tokenURI) public onlyOwner {
+        _mint(msg.sender, tokenId, _fees);
+        _setTokenURI(tokenId, tokenURI);
+    }
+
+
     function mint(uint256 tokenId, uint8 v, bytes32 r, bytes32 s, Fee[] memory _fees, string memory tokenURI) public {
         require(isSigner(ecrecover(validationHash(tokenId,_fees), v, r, s)), "owner should sign tokenId & fees");
         _mint(msg.sender, tokenId, _fees);

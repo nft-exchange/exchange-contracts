@@ -992,6 +992,10 @@ contract SignerRole is Context {
     }
 }
 
+/**
+ * @title MintableCollectionToken
+ * @dev anyone can mint token.
+ */
 contract MintableCollectionToken is Ownable, SignerRole, ERC1155Base {
     string public name;
     string public symbol;
@@ -1023,6 +1027,10 @@ contract MintableCollectionToken is Ownable, SignerRole, ERC1155Base {
 
     function removeSigner(address account) public onlyOwner {
         _removeSigner(account);
+    }
+
+    function mint(uint256 tokenId, Fee[] memory fees, uint256 supply, string memory uri) public onlyOwner {
+        _mint(tokenId, fees, supply, uri);
     }
 
     function mint(uint256 tokenId, uint8 v, bytes32 r, bytes32 s, Fee[] memory fees, uint256 supply, string memory uri) public {

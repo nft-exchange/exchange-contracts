@@ -226,7 +226,7 @@ contract Exchange is ReentrancyGuard, Ownable {
      * @return Hash of message prefix and order hash per Ethereum format
      */
     function hashToSign(Order memory order)
-        internal
+        public
         pure
         returns (bytes32)
     {
@@ -253,7 +253,7 @@ contract Exchange is ReentrancyGuard, Ownable {
      * @param order Order to validate
      */
     function validateOrderParameters(Order memory order)
-        internal
+        public
         view
         returns (bool)
     {
@@ -282,7 +282,7 @@ contract Exchange is ReentrancyGuard, Ownable {
      * @param sig ECDSA signature
      */
     function validateOrder(bytes32 hash, Order memory order, Sig memory sig) 
-        internal
+        public
         view
         returns (bool)
     {
@@ -318,7 +318,7 @@ contract Exchange is ReentrancyGuard, Ownable {
      * @param orderbookInclusionDesired Whether orderbook providers should include the order in their orderbooks
      */
     function approveOrder(Order memory order, bool orderbookInclusionDesired)
-        internal
+        public
     {
         /* CHECKS */
 
@@ -351,7 +351,7 @@ contract Exchange is ReentrancyGuard, Ownable {
      * @param sig ECDSA signature
      */
     function cancelOrder(Order memory order, Sig memory sig) 
-        internal
+        public
     {
         /* CHECKS */
 
@@ -376,7 +376,7 @@ contract Exchange is ReentrancyGuard, Ownable {
      * @return The current price of the order
      */
     function calculateCurrentPrice (Order memory order)
-        internal  
+        public  
         view
         returns (uint)
     {
@@ -624,7 +624,7 @@ contract Exchange is ReentrancyGuard, Ownable {
      */
     function validateParameters(SaleKind saleKind, uint expirationTime)
         pure
-        internal
+        public
         returns (bool)
     {
         /* Auctions must have a set expiration date. */
@@ -639,7 +639,7 @@ contract Exchange is ReentrancyGuard, Ownable {
      */
     function canSettleOrder(uint listingTime, uint expirationTime)
         view
-        internal
+        public
         returns (bool)
     {
         return (listingTime < block.timestamp) && (expirationTime == 0 || block.timestamp < expirationTime);
@@ -662,7 +662,7 @@ contract Exchange is ReentrancyGuard, Ownable {
      */
     function calculateDutchAuctionCurrentPrice(Order memory sellOrder)
         view
-        internal
+        public
         returns (uint finalPrice)
     {
         uint256 diff = ((sellOrder.basePrice - sellOrder.reservePrice) * (block.timestamp - sellOrder.listingTime)) / (sellOrder.expirationTime - sellOrder.listingTime);
